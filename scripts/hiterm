@@ -1,0 +1,2 @@
+#!/usr/bin/env perl
+while (<STDIN>) { for my $i (0..$#ARGV) { s/($ARGV[$i])/"\x1b[".(($i % 6)+41)."m$1\x1b[0m"/ge; } print; }
