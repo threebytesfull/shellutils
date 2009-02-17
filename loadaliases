@@ -1,0 +1,64 @@
+# vim:ft=sh
+
+#-------------------------------------------------------------------------
+# Copyright 2009 Rufus Cable
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#-------------------------------------------------------------------------
+
+function usage() {
+    script_name=$(basename $0)
+    aliases_dir=$(dirname "${script_name}")/aliases
+    cat <<END_OF_USAGE
+$script_name
+
+This script sets up bash aliases from the directory
+$aliases_dir.
+
+Each alias name is taken from the filename and the
+alias content is taken from the file content.
+
+The script must be sourced rather than executed:
+
+ . $script_name
+END_OF_USAGE
+}
+
+# Find this script's name
+script_name=${BASH_ARGV[0]}
+
+# Exit if we're not being sourced
+if [ "$_" == "$script_name" ]; then
+    usage && exit 1
+fi
+
+# Find aliases directory alongside this script
+aliases_dir=$(dirname "${script_name}")/aliases
+
+# Load aliases from directory if present
+if [ -d "$aliases_dir" ]; then
+    # Look at all non-empty alias files
+    for alias_file in $aliases_dir/*; do
+        if [ -s $alias_file ]; then
+
+            # The alias is named after the file
+            alias_name=$(basename $alias_file)
+
+            # and the alias content is the file content
+            alias_command=$(cat $alias_file)
+
+            # set the alias (is there a nicer way to do this?)
+            eval "alias $alias_name='$alias_command'"
+        fi
+    done
+fi
