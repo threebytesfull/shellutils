@@ -1,2 +1,45 @@
 #!/usr/bin/env perl
+
+=head1 NAME
+
+hiterm - highlight terms in standard input
+
+=head1 SYNOPSIS
+
+  cat some_file.txt | hiterm string1 string2
+
+=head1 DESCRIPTION
+
+This script highlights all occurrences in standard input of the search
+terms supplied as command line arguments.
+
+Its output is similar to (and inspired by) the coloured search term
+highlighting in Google cache pages.
+
+=head2 ARGUMENTS
+
+Each argument is used as a Perl regular expression, so usual regular
+expression quoting and special meaning rules apply.
+
+=head1 BUGS
+
+=over
+
+=item
+
+It doesn't work nicely when one search term is a substring of another.
+
+=item
+
+No attempt is made to check the terminal's colour support. 7 basic ANSI
+colours are used.
+
+=back
+
+=head1 AUTHOR
+
+Rufus Cable E<lt>rufus@threebytesfull.comE<gt>
+
+=cut
+
 while (<STDIN>) { for my $i (0..$#ARGV) { s/($ARGV[$i])/"\x1b[".(($i % 6)+41)."m$1\x1b[0m"/ge; } print; }
