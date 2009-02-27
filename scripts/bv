@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-# Convenience script to invoke branch_versions and highlight the revision numbers
+# Convenience script to invoke svn_versions and highlight the branch revision numbers
 
-branch_versions $* | hiterm '[0-9]'
+svn_versions branches $* | hiterm '[0-9]+$'

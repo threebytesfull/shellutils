@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Convenience script to invoke svn_versions and highlight the branch and tag revision numbers
+
+( bv $* ; tv $*) | sort -u

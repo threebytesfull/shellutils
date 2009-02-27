@@ -6,6 +6,15 @@ if [ -z "${SVN}" ]; then
     exit 1
 fi
 
+# Get search type
+search_type=$1
+shift 1
+
+if [ -z "${search_type}" ]; then
+    echo "You need to supply a search type (typically branches or tags)"
+    exit 1
+fi
+
 # Use separate GNU binaries if they're installed
 # Otherwise, assume they're GNU versions (should really check these)
 
@@ -15,13 +24,13 @@ GREP=${GREP:-$(which grep)}
 SED=$(which gsed)
 SED=${SED:-$(which sed)}
 
-# Show branches
+# Show branches or tags
 (
     for search_term in $*; do
-        for x in $(svn ls $SVN/branches | $GREP $search_term); do
+        for x in $(svn ls $SVN/$search_type | $GREP $search_term); do
             branch_name=$(echo "${x}" | $SED -e 's|/$||')
             echo -n "${branch_name}: "
-            svn info $SVN/branches/$x | $GREP 'Last Changed Rev:' | $GREP -o '[0-9][0-9]*'
+            svn info $SVN/$search_type/$x | $GREP 'Last Changed Rev:' | $GREP -o '[0-9][0-9]*'
         done
     done
 ) | sort -u
