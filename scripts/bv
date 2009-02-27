@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Convenience script to invoke branch_versions and highlight the revision numbers
+
+branch_versions $* | hiterm '[0-9]'
