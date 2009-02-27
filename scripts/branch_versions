@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Check SVN repository location
+if [ -z "${SVN}" ]; then
+    echo "You need to set the SVN environment variable to the base URL for your repository" >&2
+    exit 1
+fi
+
+# Use separate GNU binaries if they're installed
+# Otherwise, assume they're GNU versions (should really check these)
+
+GREP=$(which ggrep)
+GREP=${GREP:-$(which grep)}
+
+SED=$(which gsed)
+SED=${SED:-$(which sed)}
+
+# Show branches
+(
+    for search_term in $*; do
+        for x in $(svn ls $SVN/branches | $GREP $search_term); do
+            branch_name=$(echo "${x}" | $SED -e 's|/$||')
+            echo -n "${branch_name}: "
+            svn info $SVN/branches/$x | $GREP 'Last Changed Rev:' | $GREP -o '[0-9][0-9]*'
+        done
+    done
+) | sort -u
